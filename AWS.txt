@@ -1,0 +1,176 @@
+$ aws ec2 create-vpc --cidr-block 10.10.0.0/16
+{
+    "Vpc": {
+        "CidrBlock": "10.10.0.0/16",
+        "DhcpOptionsId": "dopt-0bf04575b536e0ca6",
+        "State": "pending",
+        "VpcId": "vpc-0fe95894c55fb0595",
+        "OwnerId": "029247170798",
+        "InstanceTenancy": "default",
+        "Ipv6CidrBlockAssociationSet": [],
+        "CidrBlockAssociationSet": [
+            {
+                "AssociationId": "vpc-cidr-assoc-085ba6ce3ed39deb3",
+                "CidrBlock": "10.10.0.0/16",
+                "CidrBlockState": {
+                    "State": "associated"
+                }
+            }
+        ],
+        "IsDefault": false
+    }
+}
+
+
+$ aws ec2 create-tags --resources vpc-0fe95894c55fb0595 --tags Key=Name,Value=cli-Hillel
+
+$ aws ec2 create-subnet --vpc-id vpc-0fe95894c55fb0595 --cidr-block 10.10.1.0/24
+{
+    "Subnet": {
+        "AvailabilityZone": "us-west-2d",
+        "AvailabilityZoneId": "usw2-az4",
+        "AvailableIpAddressCount": 251,
+        "CidrBlock": "10.10.1.0/24",
+        "DefaultForAz": false,
+        "MapPublicIpOnLaunch": false,
+        "State": "available",
+        "SubnetId": "subnet-079a25f4a356ce480",
+        "VpcId": "vpc-0fe95894c55fb0595",
+        "OwnerId": "029247170798",
+        "AssignIpv6AddressOnCreation": false,
+        "Ipv6CidrBlockAssociationSet": [],
+        "SubnetArn": "arn:aws:ec2:us-west-2:029247170798:subnet/subnet-079a25f4a356ce480",
+        "EnableDns64": false,
+        "Ipv6Native": false,
+        "PrivateDnsNameOptionsOnLaunch": {
+            "HostnameType": "ip-name",
+            "EnableResourceNameDnsARecord": false,
+            "EnableResourceNameDnsAAAARecord": false
+        }
+    }
+}
+
+$ aws ec2 create-tags --resources subnet-079a25f4a356ce480 --tags Key=Name,Value=public
+
+$ aws ec2 create-subnet --vpc-id vpc-0fe95894c55fb0595 --cidr-block 10.10.2.0/24
+{
+    "Subnet": {
+        "AvailabilityZone": "us-west-2d",
+        "AvailabilityZoneId": "usw2-az4",
+        "AvailableIpAddressCount": 251,
+        "CidrBlock": "10.10.2.0/24",
+        "DefaultForAz": false,
+        "MapPublicIpOnLaunch": false,
+        "State": "available",
+        "SubnetId": "subnet-0332d1da2c74491ef",
+        "VpcId": "vpc-0fe95894c55fb0595",
+        "OwnerId": "029247170798",
+        "AssignIpv6AddressOnCreation": false,
+        "Ipv6CidrBlockAssociationSet": [],
+        "SubnetArn": "arn:aws:ec2:us-west-2:029247170798:subnet/subnet-0332d1da2c74491ef",
+        "EnableDns64": false,
+        "Ipv6Native": false,
+        "PrivateDnsNameOptionsOnLaunch": {
+            "HostnameType": "ip-name",
+            "EnableResourceNameDnsARecord": false,
+            "EnableResourceNameDnsAAAARecord": false
+        }
+    }
+}
+
+$ aws ec2 create-tags --resources subnet-0332d1da2c74491ef --tags Key=Name,Value=private
+
+$ aws ec2 create-internet-gateway
+{
+    "InternetGateway": {
+        "Attachments": [],
+        "InternetGatewayId": "igw-0faf4b52ed0abecbe",
+        "OwnerId": "029247170798",
+        "Tags": []
+    }
+}
+
+$ aws ec2 create-tags --resources igw-0faf4b52ed0abecbe --tags Key=Name,Value=public 
+
+$ aws ec2 attach-internet-gateway --internet-gateway-id igw-0faf4b52ed0abecbe --vpc-id vpc-0fe95894c55fb0595
+
+$ aws ec2 create-route-table --vpc-id vpc-0fe95894c55fb0595
+{
+    "RouteTable": {
+        "Associations": [],
+        "PropagatingVgws": [],
+        "RouteTableId": "rtb-03bf971b2b5992a79",
+        "Routes": [
+            {
+                "DestinationCidrBlock": "10.10.0.0/16",
+                "GatewayId": "local",
+                "Origin": "CreateRouteTable",
+                "State": "active"
+            }
+        ],
+        "Tags": [],
+        "VpcId": "vpc-0fe95894c55fb0595",
+        "OwnerId": "029247170798"
+    }
+}
+
+$ aws ec2 create-tags --resources rtb-03bf971b2b5992a79 --tags Key=Name,Value=public
+
+$ aws ec2 create-route --route-table-id rtb-03bf971b2b5992a79 --destination-cidr-block 0.0.0.0/0 --gateway-id igw-0faf4b52ed0abecbe
+{
+    "Return": true
+}
+
+$ aws ec2 associate-route-table --route-table-id rtb-03bf971b2b5992a79 --subnet-id subnet-079a25f4a356ce480
+{
+    "AssociationId": "rtbassoc-056d8a413be11a5b6",
+    "AssociationState": {
+        "State": "associated"
+    }
+}
+
+
+
+
+$ aws ec2 describe-subnets --filters "Name=vpc-id, Values=vpc-0fe95894c55fb0595" "Name=tag:Name,Values=private"
+{
+    "Subnets": [
+        {
+            "AvailabilityZone": "us-west-2d",
+            "AvailabilityZoneId": "usw2-az4",
+            "AvailableIpAddressCount": 251,
+            "CidrBlock": "10.10.2.0/24",
+            "DefaultForAz": false,
+            "MapPublicIpOnLaunch": false,
+            "MapCustomerOwnedIpOnLaunch": false,
+            "State": "available",
+            "SubnetId": "subnet-0332d1da2c74491ef",
+            "VpcId": "vpc-0fe95894c55fb0595",
+            "OwnerId": "029247170798",
+            "AssignIpv6AddressOnCreation": false,
+            "Ipv6CidrBlockAssociationSet": [],
+            "Tags": [
+                {
+                    "Key": "Name",
+                    "Value": "private"
+                }
+            ],
+            "SubnetArn": "arn:aws:ec2:us-west-2:029247170798:subnet/subnet-0332d1da2c74491ef",
+            "EnableDns64": false,
+            "Ipv6Native": false,
+            "PrivateDnsNameOptionsOnLaunch": {
+                "HostnameType": "ip-name",
+                "EnableResourceNameDnsARecord": false,
+                "EnableResourceNameDnsAAAARecord": false
+            }
+        }
+    ]
+}
+
+
+
+
+$ aws ec2 describe-images --owners amazon --region us-west-2 --filters "Name=architecture, Values=x86_64" "Name=name, Values=amzn2*" --query 'sort_by(Images, &CreationDate)[-1].Name'
+"amzn2-ami-ecs-gpu-hvm-2.0.20230127-x86_64-ebs"
+
+
