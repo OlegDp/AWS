@@ -170,7 +170,7 @@ $ aws ec2 describe-subnets --filters "Name=vpc-id, Values=vpc-0fe95894c55fb0595"
 
 
 
-$ aws ec2 describe-images --owners amazon --region us-west-2 --filters "Name=architecture, Values=x86_64" "Name=name, Values=amzn2*" --query 'sort_by(Images, &CreationDate)[-1].Name'
-"amzn2-ami-ecs-gpu-hvm-2.0.20230127-x86_64-ebs"
-
-
+$ aws ec2 describe-images --owners amazon --filters 'Name=description,Values=Amazon Linux 2 *' 'Name=architecture,Values=x86_64' --query 'sort_by(Images, &CreationDate)[-1].[ImageId]' --region us-west-2
+[
+    "ami-0720d173d2dc9052b"
+]
