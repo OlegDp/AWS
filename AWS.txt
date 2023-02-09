@@ -132,40 +132,10 @@ $ aws ec2 associate-route-table --route-table-id rtb-03bf971b2b5992a79 --subnet-
 
 
 
-$ aws ec2 describe-subnets --filters "Name=vpc-id, Values=vpc-0fe95894c55fb0595" "Name=tag:Name,Values=private"
-{
-    "Subnets": [
-        {
-            "AvailabilityZone": "us-west-2d",
-            "AvailabilityZoneId": "usw2-az4",
-            "AvailableIpAddressCount": 251,
-            "CidrBlock": "10.10.2.0/24",
-            "DefaultForAz": false,
-            "MapPublicIpOnLaunch": false,
-            "MapCustomerOwnedIpOnLaunch": false,
-            "State": "available",
-            "SubnetId": "subnet-0332d1da2c74491ef",
-            "VpcId": "vpc-0fe95894c55fb0595",
-            "OwnerId": "029247170798",
-            "AssignIpv6AddressOnCreation": false,
-            "Ipv6CidrBlockAssociationSet": [],
-            "Tags": [
-                {
-                    "Key": "Name",
-                    "Value": "private"
-                }
-            ],
-            "SubnetArn": "arn:aws:ec2:us-west-2:029247170798:subnet/subnet-0332d1da2c74491ef",
-            "EnableDns64": false,
-            "Ipv6Native": false,
-            "PrivateDnsNameOptionsOnLaunch": {
-                "HostnameType": "ip-name",
-                "EnableResourceNameDnsARecord": false,
-                "EnableResourceNameDnsAAAARecord": false
-            }
-        }
-    ]
-}
+$ aws ec2 describe-subnets --filters "Name=vpc-id, Values=vpc-0fe95894c55fb0595" "Name=tag:Name,Values=private" --query "Subnets[*].CidrBlock"
+[
+    "10.10.2.0/24"
+]
 
 
 
